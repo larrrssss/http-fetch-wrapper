@@ -85,7 +85,7 @@ export class API {
     if (endpoint.startsWith('http'))
       fullUrl = endpoint;
     else 
-      fullUrl = `${this.config.baseURL || ''}${path}/${endpoint}`;
+      fullUrl = `${this.config.baseURL || ''}${path}${!endpoint.startsWith('/') ? '/' : ''}${endpoint}`;
 
     if (config.requestIntercept)
       config.requestIntercept({ ...config.options, endpoint: fullUrl });
