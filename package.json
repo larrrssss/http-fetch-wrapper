@@ -1,6 +1,6 @@
 {
   "name": "http-fetch-wrapper",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Http client wrapper around fetch",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
