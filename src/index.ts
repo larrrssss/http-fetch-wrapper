@@ -75,7 +75,9 @@ export class API {
     if (!config.options.headers) 
       config.options.headers = {};
 
-    config.options.body = payload;
+    config.options.body = typeof payload === 'object'
+      ? JSON.stringify(payload)
+      : payload;
     if (typeof payload === 'object' && !(payload instanceof FormData)) {
       if (!(config.options.headers as StringObject)['Content-Type'] && !(config.options.headers as StringObject)['content-type'])
         (config.options.headers as StringObject)['Content-Type'] = 'application/json';
