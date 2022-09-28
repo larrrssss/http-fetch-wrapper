@@ -43,45 +43,52 @@ export class API {
     return config;
   }
 
-  public get(endpoint: string): Promise<APIResponse> {
-    return this.send('GET', endpoint);
+  public get(endpoint: string, options?: RequestInit): Promise<APIResponse> {
+    return this.send('GET', endpoint, null, options);
   }
 
-  public post(endpoint: string, payload?: any): Promise<APIResponse> {
-    return this.send('POST', endpoint, payload);
+  public post(endpoint: string, payload?: any, options?: RequestInit): Promise<APIResponse> {
+    return this.send('POST', endpoint, payload, options);
   }
 
-  public put(endpoint: string, payload?: any): Promise<APIResponse> {
-    return this.send('PUT', endpoint, payload);
+  public put(endpoint: string, payload?: any, options?: RequestInit): Promise<APIResponse> {
+    return this.send('PUT', endpoint, payload, options);
   }
 
-  public patch(endpoint: string, payload?: any): Promise<APIResponse> {
-    return this.send('PATCH', endpoint, payload);
+  public patch(endpoint: string, payload?: any, options?: RequestInit): Promise<APIResponse> {
+    return this.send('PATCH', endpoint, payload, options);
   }
 
-  public delete(endpoint: string, payload?: any): Promise<APIResponse> {
-    return this.send('DELETE', endpoint, payload);
+  public delete(endpoint: string, payload?: any, options?: RequestInit): Promise<APIResponse> {
+    return this.send('DELETE', endpoint, payload, options);
   }
 
-  private async send(method: HttpMethod, endpoint: string, payload?: any): Promise<APIResponse> {
+  private async send(method: HttpMethod, endpoint: string, payload?: any, options?: RequestInit): Promise<APIResponse> {
     let fullUrl: string;
     const config: APIConfig = API.copyConfig(this.config);
 
     if (!config.options)
       config.options = {};
 
+    if (options)
+      config.options = {
+        ...options,
+      };
+
     config.options.method = method;
 
     if (!config.options.headers) 
       config.options.headers = {};
 
-    config.options.body = typeof payload === 'object'
-      ? JSON.stringify(payload)
-      : payload;
-    if (typeof payload === 'object' && !(payload instanceof FormData)) {
-      if (!(config.options.headers as StringObject)['Content-Type'] && !(config.options.headers as StringObject)['content-type'])
-        (config.options.headers as StringObject)['Content-Type'] = 'application/json';
-    }
+    if (payload) {
+      config.options.body = typeof payload === 'object'
+        ? JSON.stringify(payload)
+        : payload;
+      if (typeof payload === 'object' && !(payload instanceof FormData)) {
+        if (!(config.options.headers as StringObject)['Content-Type'] && !(config.options.headers as StringObject)['content-type'])
+          (config.options.headers as StringObject)['Content-Type'] = 'application/json';
+      }
+    }    
 
     const path = this.config.path ? '/'  + this.config.path : '';
     if (endpoint.startsWith('http'))
